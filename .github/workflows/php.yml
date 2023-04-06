@@ -20,3 +20,55 @@ jobs:
         php-version: '8.0'
         coverage: 'pcov'
         extensions: mbstring, xml, zip
+
+
+  name: WordPress CI/CD Pipeline
+
+  on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+env:
+  WP_VERSION: 5.8
+  WP_PORT: 8888
+
+  services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_DATABASE: wordpress_test
+          MYSQL_USER: root
+          MYSQL_PASSWORD: root
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - "3306:3306"
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y php-curl php-xml
+        curl -sS https://getcomposer.org/installer -o composer-setup.php
+        sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+
+    - name: Setup WordPress
+      run: |
+        composer create-project --no-dev --keep-vcs --prefer-dist \
+        roots/bedrock my-wp-site
+        cd my-wp-site
+        composer require johnpbloch/wordpress-core:$WP_VERSION
+        curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+        php wp-cli.phar config create --dbname=wordpress_test \
+        --dbuser=root --dbpass=root --dbhost=mysql --dbprefix=wp_
+        php wp-cli.phar core install --url="http://localhost:$WP_PORT" \
+        --title="My WP Site
