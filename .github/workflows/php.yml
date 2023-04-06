@@ -21,16 +21,18 @@ jobs:
         coverage: 'pcov'
         extensions: mbstring, xml, zip
 
+ steps:
+      - name: Checkout
+        uses: actions/checkout@v3
 
+      - name: Install Composer dependencies
+        uses: php-actions/composer@v6
 
-    - name: Setup WordPress
-      run: |
-        composer create-project --no-dev --keep-vcs --prefer-dist \
-        roots/bedrock my-wp-site
-        cd my-wp-site
-        composer require johnpbloch/wordpress-core:$1.0
-        curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-        php wp-cli.phar config create --dbname=wordpress_test \
-        --dbuser=root --dbpass=root --dbhost=mysql --dbprefix=wp_
-        php wp-cli.phar core install --url="http://localhost:$WP_PORT" \
-        --title="My WP Site
+      - name: Install Node.js LTS
+        uses: actions/setup-node@v3
+        with:
+          node-version: 'lts/*'
+          cache: 'yarn'
+
+      - name: Install Node.js dependencies
+        run: yarn install
