@@ -28,7 +28,7 @@ jobs:
         composer create-project --no-dev --keep-vcs --prefer-dist \
         roots/bedrock my-wp-site
         cd my-wp-site
-        composer require johnpbloch/wordpress-core:$WP_VERSION
+        composer require johnpbloch/wordpress-core:
         curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
         php wp-cli.phar config create --dbname=wordpress_test \
         --dbuser=root --dbpass=root --dbhost=mysql --dbprefix=wp_
