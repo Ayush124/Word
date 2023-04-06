@@ -21,22 +21,14 @@ jobs:
         coverage: 'pcov'
         extensions: mbstring, xml, zip
 
-
-
-    jobs:
-      build:
-      runs-on: ubuntu-latest
-
-      steps:
-      - name: Checkout code
-      uses: actions/checkout@v2
+ 
 
     - name: Install Dependencies
-           run: |
-          sudo apt-get update
-          sudo apt-get install -y php-curl php-xml
-          curl -sS https://getcomposer.org/installer -o composer-setup.php
-          sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y php-curl php-xml
+        curl -sS https://getcomposer.org/installer -o composer-setup.php
+        sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
 
     - name: Setup WordPress
       run: |
