@@ -1,0 +1,17 @@
+name: PHP Tests
+
+on: [push ]
+
+jobs:
+  tests:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-ansi --no-interaction --no-progress --no-scripts
+      - name: Run tests
+        run: vendor/bin/phpunit
